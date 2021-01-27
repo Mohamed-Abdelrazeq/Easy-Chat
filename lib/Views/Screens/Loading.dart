@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Spanner.dart';
+import '../Component/Spanner.dart';
 
 class Loading extends StatelessWidget {
   @override
