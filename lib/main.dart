@@ -1,3 +1,4 @@
+import 'package:easychat_app/Views/Screens/TestScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +23,7 @@ class App extends StatelessWidget {
       routes: {
         '/Register': (context) => RegisterScreen(),
         '/Login': (context) => LoginScreen(),
+        '/Test': (context) => TestScreen(),
       },
       home: FutureBuilder(
         // Initialize FlutterFire:

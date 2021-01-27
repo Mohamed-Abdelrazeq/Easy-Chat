@@ -1,18 +1,16 @@
 import 'package:easychat_app/Views/Component/MyTextField.dart';
 import 'package:easychat_app/Views/Functions/Auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 import 'ChatScreen.dart';
 
-TextEditingController firstName = TextEditingController();
-TextEditingController secondName = TextEditingController();
+TextEditingController email = TextEditingController();
+TextEditingController password = TextEditingController();
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
-    signOut();
-
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return GestureDetector(
@@ -48,7 +46,7 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: height*.01,),
-              MyTextField(hint: "Email",controller: firstName,),
+              MyTextField(hint: "Email",controller: email,),
               SizedBox(height: height*.02,),
               Text(
                 'Password',
@@ -59,18 +57,68 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: height*.02,),
-              MyTextField(hint: 'Password',controller: secondName,),
+              MyTextField(hint: 'Password',controller: password,),
               SizedBox(height: height*.1,),
               GestureDetector(
                 onTap: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChatScreen(email: firstName.text,password: secondName.text,),
-                    ),
-                  );
+                  //Close Keyboard
                   FocusScope.of(context).requestFocus(FocusNode());
-                  firstName.clear();
-                  secondName.clear();
+                  //Check textfields
+                  if(email.text == ''){
+                    Flushbar(
+                      title: "Warning",
+                      message: "Enter your email",
+                      backgroundColor: Colors.teal,
+                      boxShadows: [BoxShadow(color: Colors.red[800], offset: Offset(0.0, 2.0), blurRadius: 3.0,)],
+                      duration:  Duration(seconds: 2),
+                    ).show(context);
+                  }
+                  else if(password.text == ''){
+                    Flushbar(
+                      title: "Warning",
+                      message: "Enter your password",
+                      backgroundColor: Colors.teal,
+                      boxShadows: [BoxShadow(color: Colors.red[800], offset: Offset(0.0, 2.0), blurRadius: 3.0,)],
+                      duration:  Duration(seconds: 2),
+                    ).show(context);
+                  }
+                  else {
+                    //make request
+                    var myReturn = await login(email.text, password.text);
+                    //test response
+                    if (myReturn == true){
+                      email.clear();
+                      password.clear();
+                      Navigator.pushNamed(context, '/Test');
+                    }
+                    else if (myReturn == 'password') {
+                      Flushbar(
+                        title: "Warning",
+                        message: "Your password is not correct",
+                        backgroundColor: Colors.teal,
+                        boxShadows: [BoxShadow(color: Colors.red[800], offset: Offset(0.0, 2.0), blurRadius: 3.0,)],
+                        duration:  Duration(seconds: 2),
+                      ).show(context);
+                    }
+                    else if (myReturn == 'email'){
+                      Flushbar(
+                        title: "Warning",
+                        message: "Your email in not correct",
+                        backgroundColor: Colors.teal,
+                        boxShadows: [BoxShadow(color: Colors.red[800], offset: Offset(0.0, 2.0), blurRadius: 3.0,)],
+                        duration:  Duration(seconds: 2),
+                      ).show(context);
+                    }
+                    else{
+                      Flushbar(
+                        title: "Warning",
+                        message: "Invalid email and password",
+                        backgroundColor: Colors.teal,
+                        boxShadows: [BoxShadow(color: Colors.red[800], offset: Offset(0.0, 2.0), blurRadius: 3.0,)],
+                        duration:  Duration(seconds: 2),
+                      ).show(context);
+                    }
+                  }
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: width*.1),
