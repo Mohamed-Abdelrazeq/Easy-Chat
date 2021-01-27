@@ -14,7 +14,7 @@ class MyTextField extends StatelessWidget {
       decoration:  InputDecoration(
         hintText: hint,
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.red, width: 1.0),
+          borderSide: BorderSide(color: Colors.teal, width: 1.0),
         ),
       ),
     );

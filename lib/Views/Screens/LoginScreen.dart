@@ -3,8 +3,6 @@ import 'package:easychat_app/Views/Functions/Auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
-import 'ChatScreen.dart';
-
 TextEditingController email = TextEditingController();
 TextEditingController password = TextEditingController();
 
@@ -24,8 +22,6 @@ class LoginScreen extends StatelessWidget {
           width: width,
           padding: EdgeInsets.symmetric(horizontal: width*.1),
           child: ListView(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: height*.2,),
               Text(
