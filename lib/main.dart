@@ -1,3 +1,4 @@
+import 'package:easychat_app/Views/Screens/ChatScreen.dart';
 import 'package:easychat_app/Views/Screens/TestScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class App extends StatelessWidget {
         '/Register': (context) => RegisterScreen(),
         '/Login': (context) => LoginScreen(),
         '/Test': (context) => TestScreen(),
+        '/ChatScreen': (context) => ChatScreen(),
       },
       home: FutureBuilder(
         // Initialize FlutterFire:

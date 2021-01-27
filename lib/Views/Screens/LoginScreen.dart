@@ -89,7 +89,7 @@ class LoginScreen extends StatelessWidget {
                     if (myReturn == true){
                       email.clear();
                       password.clear();
-                      Navigator.pushNamed(context, '/Test');
+                      Navigator.pushNamed(context, '/ChatScreen');
                     }
                     else if (myReturn == 'password') {
                       Flushbar(
