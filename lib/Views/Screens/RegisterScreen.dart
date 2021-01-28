@@ -1,12 +1,33 @@
 import 'package:easychat_app/Views/Component/MyTextField.dart';
-import 'file:///C:/Users/Abdel/Desktop/Flutter%20Projects/easychat_app/lib/Firebase%20Models/Auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
-TextEditingController email = TextEditingController();
-TextEditingController password = TextEditingController();
+
 
 class RegisterScreen extends StatelessWidget {
+
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
+
+  Future register(String email,String password) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        return 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        return 'The account already exists for that email.' ;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;

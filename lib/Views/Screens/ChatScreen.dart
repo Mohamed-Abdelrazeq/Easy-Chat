@@ -1,5 +1,4 @@
 import 'package:easychat_app/Controllers/UserProvider.dart';
-import 'package:easychat_app/Firebase%20Models/MessagesModel.dart';
 import 'package:easychat_app/Views/Component/Spanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -143,31 +142,42 @@ class Header extends StatelessWidget {
 }
 
 class MessageSender extends StatelessWidget {
+  //Constructor
   MessageSender({
-    Key key,
     @required this.width,
     @required this.height,
-  }) : super(key: key);
-
+  });
+  //Final Vars
   final double width;
   final double height;
   final TextEditingController myMessageController = TextEditingController();
+  //Functions
+  Future<void> sendMessage(String message, String sender, String receiver) {
+
+    var now = new DateTime.now();
+
+    DocumentReference messages = FirebaseFirestore.instance.collection('Messages').doc('$now');
+    return messages.set({
+      'Message': message,
+      'Receiver': receiver,
+      'Sender': sender,
+    })
+    // .then((value) => print("sent"))
+        .catchError((error) => print("Failed: $error"));
+  }
+  void goDownFunction(){
+    Timer(Duration(milliseconds: 300),
+            () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
+  }
+  void sendMessageFunction(var context) async {
+    await sendMessage(myMessageController.text,'${Provider.of<UserProvider>(context,listen: false).email}', 'user2');
+    messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
+    myMessageController.text = '';
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    void sendMessageFunction() async {
-      await sendMessage(myMessageController.text,'${Provider.of<UserProvider>(context,listen: false).email}', 'user2');
-      messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
-      myMessageController.text = '';
-    }
-    void goDownFunction(){
-      Timer(Duration(milliseconds: 300),
-              () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
-    }
-
     goDownFunction();
-
     return Padding(
       padding: EdgeInsets.only(
           left: width * .05, right: width * .05, bottom: height * .02),
@@ -185,7 +195,7 @@ class MessageSender extends StatelessWidget {
             child: Center(
               child: TextField(
                 onSubmitted: (message)async{
-                  sendMessageFunction();
+                  sendMessageFunction(context);
                 },
                 onEditingComplete: (){
                   goDownFunction();
@@ -219,7 +229,7 @@ class MessageSender extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: ()async{
-                sendMessageFunction();
+                sendMessageFunction(context);
               },
               child: Container(
                 height: height * .08,

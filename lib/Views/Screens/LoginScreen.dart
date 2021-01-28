@@ -1,12 +1,41 @@
-import 'package:easychat_app/Firebase%20Models/Auth.dart';
+import 'package:easychat_app/Controllers/UserProvider.dart';
 import 'package:easychat_app/Views/Component/MyTextField.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-TextEditingController email = TextEditingController();
-TextEditingController password = TextEditingController();
+
 
 class LoginScreen extends StatelessWidget {
+
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
+
+  Future login({String email,String password,var context}) async {
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+
+      Provider.of<UserProvider>(context,listen: false).emailSetter(email);
+
+      return true;
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      if (e.code == 'user-not-found') {
+        return 'email';
+      } else if (e.code == 'wrong-password') {
+        return 'password';
+      }
+      else{
+        return e;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
