@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-Future<void> addUser(String message, String sender, String receiver) {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-  return users
-      .add({
+Future<void> sendMessage(String message, String sender, String receiver) {
+
+  var now = new DateTime.now();
+
+  DocumentReference messages = FirebaseFirestore.instance.collection('Messages').doc('$now');
+  return messages.set({
         'Message': message,
         'Receiver': receiver,
         'Sender': sender,

@@ -1,10 +1,12 @@
+import 'package:easychat_app/Firebase%20Models/MessagesModel.dart';
 import 'package:easychat_app/Views/Component/Spanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 TextEditingController messageController = TextEditingController();
-
+ScrollController messagesController = ScrollController();
 class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class ChatScreen extends StatelessWidget {
               Header(width: width, height: height),
               SizedBox(height: 10,),
               Expanded(child: MessagingStream(width: width)),
+              SizedBox(height: 10,),
               MessageSender(width: width,height: height,),
             ],
           )
@@ -54,6 +57,7 @@ class MessagingStream extends StatelessWidget {
           return spanner;
         }
         return ListView(
+          controller: messagesController,
           physics: BouncingScrollPhysics(),
           children: snapshot.data.docs.map((DocumentSnapshot document) {
             var sender = document.data()['Sender'];
@@ -147,6 +151,10 @@ class MessageSender extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Timer(Duration(milliseconds: 300),
+            () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
+
     return Padding(
       padding: EdgeInsets.only(
           left: width * .05, right: width * .05, bottom: height * .02),
@@ -163,6 +171,20 @@ class MessageSender extends StatelessWidget {
                 borderRadius: BorderRadius.circular(height)),
             child: Center(
               child: TextField(
+                onSubmitted: (message)async{
+                  print('sent');
+                  await sendMessage(message,'user1', 'user2');
+                  messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
+                  myMessageController.text = '';
+                },
+                onEditingComplete: (){
+                  Timer(Duration(milliseconds: 300),
+                          () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
+                },
+                onTap: (){
+                  Timer(Duration(milliseconds: 300),
+                  () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
+                },
                 style: TextStyle(
                   color: Colors.white
                 ),
@@ -188,9 +210,11 @@ class MessageSender extends StatelessWidget {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: (){
+              onTap: ()async{
                 print('sent');
-
+                await sendMessage(myMessageController.text,'user1', 'user2');
+                messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
+                myMessageController.text = '';
               },
               child: Container(
                 height: height * .08,
