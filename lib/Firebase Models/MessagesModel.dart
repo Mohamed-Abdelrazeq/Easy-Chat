@@ -10,6 +10,6 @@ Future<void> sendMessage(String message, String sender, String receiver) {
         'Receiver': receiver,
         'Sender': sender,
       })
-      .then((value) => print("sent"))
+      // .then((value) => print("sent"))
       .catchError((error) => print("Failed: $error"));
 }

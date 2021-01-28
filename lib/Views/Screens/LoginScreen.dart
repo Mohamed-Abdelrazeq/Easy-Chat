@@ -1,5 +1,5 @@
+import 'package:easychat_app/Firebase%20Models/Auth.dart';
 import 'package:easychat_app/Views/Component/MyTextField.dart';
-import 'file:///C:/Users/Abdel/Desktop/Flutter%20Projects/easychat_app/lib/Firebase%20Models/Auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
@@ -80,7 +80,7 @@ class LoginScreen extends StatelessWidget {
                   }
                   else {
                     //make request
-                    var myReturn = await login(email.text, password.text);
+                    var myReturn = await login(email:email.text,password: password.text,context:context);
                     //test response
                     if (myReturn == true){
                       email.clear();

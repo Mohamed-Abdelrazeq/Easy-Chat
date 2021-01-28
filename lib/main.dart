@@ -1,8 +1,10 @@
+import 'package:easychat_app/Controllers/UserProvider.dart';
 import 'package:easychat_app/Views/Screens/ChatScreen.dart';
 import 'package:easychat_app/Views/Screens/TestScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
 import 'Views/Screens/Loading.dart';
 import 'Views/Screens/LoginScreen.dart';
@@ -11,7 +13,12 @@ import 'Views/Screens/SomethingIsWrong.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(App());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
+    ],
+    child: App(),
+  ),);
 }
 
 class App extends StatelessWidget {

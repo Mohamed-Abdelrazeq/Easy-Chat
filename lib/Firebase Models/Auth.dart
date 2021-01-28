@@ -1,14 +1,18 @@
+import 'package:easychat_app/Controllers/UserProvider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 
-Future login(String email,String password) async {
+Future login({String email,String password,var context}) async {
   try {
-    UserCredential userCredential = await auth.signInWithEmailAndPassword(
+    await auth.signInWithEmailAndPassword(
         email: email,
         password: password
     );
-    print(userCredential.user); //todo : provide to the app
+
+    Provider.of<UserProvider>(context,listen: false).emailSetter(email);
+
     return true;
   } on FirebaseAuthException catch (e) {
     print(e);

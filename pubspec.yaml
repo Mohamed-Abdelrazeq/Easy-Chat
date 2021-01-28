@@ -16,7 +16,7 @@ dependencies:
   firebase_auth: "^0.20.0+1"
   flushbar: ^1.10.4
   cloud_firestore: "^0.16.0"
-
+  provider:
 
 
 dev_dependencies:
