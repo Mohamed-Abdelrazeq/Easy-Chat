@@ -1,4 +1,4 @@
-import 'package:easychat_app/Controllers/UserProvider.dart';
+import 'package:easychat_app/Controllers/ChatProvider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';

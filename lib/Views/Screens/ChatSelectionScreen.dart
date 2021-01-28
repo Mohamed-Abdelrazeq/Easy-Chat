@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easychat_app/Controllers/UserProvider.dart';
+import 'package:easychat_app/Controllers/ChatProvider.dart';
 import 'package:easychat_app/Views/Component/Spanner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,8 +16,8 @@ class ChatSelectionScreen extends StatelessWidget {
             Container(
               height: height*.1,
               width: width,
-              color: Colors.teal,
               padding: EdgeInsets.symmetric(horizontal: width*.05),
+              color: Colors.teal,
               child: Row(
                 children: <Widget>[
                   Icon(Icons.menu,color: Colors.white,size: height*.04,),
@@ -59,7 +59,8 @@ class UsersCard extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: (){
-        Provider.of<ChatProvider>(context,listen: false).senderEmailSetter(receiverEmail);
+        Provider.of<ChatProvider>(context,listen: false).receiverEmailSetter(receiverEmail);
+        Provider.of<ChatProvider>(context,listen: false).receiverUsernameSetter(receiverUsername);
         Navigator.pushNamed(
           context,
           '/ChatScreen'
@@ -88,7 +89,6 @@ class UsersCard extends StatelessWidget {
     );
   }
 }
-
 
 class UsersStream extends StatelessWidget {
 

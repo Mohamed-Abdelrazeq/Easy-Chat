@@ -1,4 +1,4 @@
-import 'package:easychat_app/Controllers/UserProvider.dart';
+import 'package:easychat_app/Controllers/ChatProvider.dart';
 import 'package:easychat_app/Views/Component/Spanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +38,54 @@ class ChatScreen extends StatelessWidget {
   }
 }
 
+class Header extends StatelessWidget {
+  const Header({
+    @required this.width,
+    @required this.height,
+  });
+
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.teal,
+      width: width,
+      height: height * .1,
+      padding: EdgeInsets.only(left: width * .05, top: height * .02),
+      child: Center(
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back_ios_outlined,
+                color: Colors.white,
+                size: height * .04,
+              ),
+            ),
+            SizedBox(width: width * .2),
+            Text(
+              Provider.of<ChatProvider>(context).receiverUsername,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
+                fontSize: height * .05,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MessagingStream extends StatelessWidget {
 
   MessagingStream({
@@ -45,9 +93,14 @@ class MessagingStream extends StatelessWidget {
   });
 
   final double width;
-  final CollectionReference messages = FirebaseFirestore.instance.collection('Messages');
 
   Widget build(BuildContext context) {
+
+    print('${Provider.of<ChatProvider>(context).senderEmail}-${Provider.of<ChatProvider>(context,listen: false).receiverEmail}');
+
+    final CollectionReference messages = FirebaseFirestore.instance.collection('Chats')
+        .doc('${Provider.of<ChatProvider>(context,listen: false).sort()[0]}-${Provider.of<ChatProvider>(context,listen: false).sort()[1]}')
+        .collection('/Messages');
 
     return StreamBuilder<QuerySnapshot>(
       stream: messages.snapshots(),
@@ -68,7 +121,7 @@ class MessagingStream extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               padding: EdgeInsets.symmetric(horizontal: width * .03),
               decoration: BoxDecoration(
-                color: sender == '${Provider.of<ChatProvider>(context).senderEmail}' ? Colors.teal : Colors.blue,
+                color: sender == '${Provider.of<ChatProvider>(context,listen: false).senderEmail}' ? Colors.teal : Colors.blue,
                 borderRadius: BorderRadius.circular(25),
               ),
               child: ListTile(
@@ -76,67 +129,19 @@ class MessagingStream extends StatelessWidget {
                   document.data()['Message'],
                   style: TextStyle(color: Colors.white),
                   textAlign:
-                      sender == '${Provider.of<ChatProvider>(context).senderEmail}' ? TextAlign.left : TextAlign.right,
+                      sender == '${Provider.of<ChatProvider>(context,listen: false).senderEmail}' ? TextAlign.left : TextAlign.right,
                 ),
                 subtitle: Text(
                   document.data()['Sender'],
                   style: TextStyle(color: Colors.white70),
                   textAlign:
-                      sender == '${Provider.of<ChatProvider>(context).senderEmail}' ? TextAlign.left : TextAlign.right,
+                      sender == '${Provider.of<ChatProvider>(context,listen: false).senderEmail}' ? TextAlign.left : TextAlign.right,
                 ),
               ),
             );
           }).toList(),
         );
       },
-    );
-  }
-}
-
-class Header extends StatelessWidget {
-  const Header({
-    Key key,
-    @required this.width,
-    @required this.height,
-  }) : super(key: key);
-
-  final double width;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.teal,
-      width: width,
-      height: height * .1,
-      padding: EdgeInsets.only(left: width * .05, top: height * .02),
-      child: Center(
-        child: Row(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                Icons.arrow_back_ios_outlined,
-                color: Colors.white,
-                size: height * .04,
-              ),
-            ),
-            SizedBox(width: width * .26),
-            Text(
-              'User2',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w400,
-                fontSize: height * .05,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -152,11 +157,13 @@ class MessageSender extends StatelessWidget {
   final double height;
   final TextEditingController myMessageController = TextEditingController();
   //Functions
-  Future<void> sendMessage(String message, String sender, String receiver) {
+  Future<void> sendMessage(String message, String sender, String receiver,var context) {
 
     var now = new DateTime.now();
 
-    DocumentReference messages = FirebaseFirestore.instance.collection('Messages').doc('$now');
+    final DocumentReference messages = FirebaseFirestore.instance.collection('Chats')
+        .doc('${Provider.of<ChatProvider>(context,listen: false).sort()[0]}-${Provider.of<ChatProvider>(context,listen: false).sort()[1]}')
+        .collection('/Messages').doc('$now');
     return messages.set({
       'Message': message,
       'Receiver': receiver,
@@ -165,19 +172,20 @@ class MessageSender extends StatelessWidget {
     // .then((value) => print("sent"))
         .catchError((error) => print("Failed: $error"));
   }
+
   void goDownFunction(){
     Timer(Duration(milliseconds: 300),
             () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
   }
   void sendMessageFunction(var context) async {
-    await sendMessage(myMessageController.text,'${Provider.of<ChatProvider>(context,listen: false).senderEmail}', 'user2');
+    await sendMessage(myMessageController.text,'${Provider.of<ChatProvider>(context,listen: false).senderEmail}', Provider.of<ChatProvider>(context,listen: false).receiverEmail,context);
     messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
     myMessageController.text = '';
   }
 
   @override
   Widget build(BuildContext context) {
-    goDownFunction();
+    // goDownFunction();
     return Padding(
       padding: EdgeInsets.only(
           left: width * .05, right: width * .05, bottom: height * .02),

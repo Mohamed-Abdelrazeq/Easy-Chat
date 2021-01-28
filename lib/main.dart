@@ -1,4 +1,4 @@
-import 'package:easychat_app/Controllers/UserProvider.dart';
+import 'package:easychat_app/Controllers/ChatProvider.dart';
 import 'package:easychat_app/Views/Screens/ChatScreen.dart';
 import 'package:easychat_app/Views/Screens/ChatSelectionScreen.dart';
 import 'package:easychat_app/Views/Screens/TestScreen.dart';
