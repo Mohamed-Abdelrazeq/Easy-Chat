@@ -1,5 +1,5 @@
 import 'package:easychat_app/Views/Component/MyTextField.dart';
-import 'package:easychat_app/Views/Functions/Auth.dart';
+import 'file:///C:/Users/Abdel/Desktop/Flutter%20Projects/easychat_app/lib/Firebase%20Models/Auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 

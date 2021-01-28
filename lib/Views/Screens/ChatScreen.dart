@@ -11,39 +11,37 @@ class ChatScreen extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Positioned(
-            child: ListView(
-              children: [
-                Header(width: width, height: height),
-                SizedBox(height: 10,),
-                Container(
-                  height: height * .75,
-                  child: MessagingStream(
-                    width: width,
-                  ),
-                ),
-                MessageSender(width: width, height: height),
-              ],
-            ),
-          ),
-        ],
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Header(width: width, height: height),
+              SizedBox(height: 10,),
+              Expanded(child: MessagingStream(width: width)),
+              MessageSender(width: width,height: height,),
+            ],
+          )
+        ),
       ),
     );
   }
 }
 
 class MessagingStream extends StatelessWidget {
-  MessagingStream({Key key, this.width}) : super(key: key);
+
+  MessagingStream({
+    @required this.width
+  });
 
   final double width;
+  final CollectionReference messages = FirebaseFirestore.instance.collection('Messages');
 
   Widget build(BuildContext context) {
-    CollectionReference messages =
-        FirebaseFirestore.instance.collection('Messages');
 
     return StreamBuilder<QuerySnapshot>(
       stream: messages.snapshots(),
@@ -56,6 +54,7 @@ class MessagingStream extends StatelessWidget {
           return spanner;
         }
         return ListView(
+          physics: BouncingScrollPhysics(),
           children: snapshot.data.docs.map((DocumentSnapshot document) {
             var sender = document.data()['Sender'];
             return Container(
@@ -136,7 +135,7 @@ class Header extends StatelessWidget {
 }
 
 class MessageSender extends StatelessWidget {
-  const MessageSender({
+  MessageSender({
     Key key,
     @required this.width,
     @required this.height,
@@ -144,6 +143,7 @@ class MessageSender extends StatelessWidget {
 
   final double width;
   final double height;
+  final TextEditingController myMessageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -161,26 +161,52 @@ class MessageSender extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.teal,
                 borderRadius: BorderRadius.circular(height)),
-            child: TextField(),
+            child: Center(
+              child: TextField(
+                style: TextStyle(
+                  color: Colors.white
+                ),
+                cursorColor: Colors.white,
+                decoration:  InputDecoration(
+                  hintText: 'Message.....',
+                  hintStyle: TextStyle(
+                    color: Colors.white
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0x00000000), width: 0),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0x00000000), width: 0),
+                  ),
+                ),
+                controller: myMessageController,
+              ),
+            ),
           ),
           SizedBox(
             width: 10,
           ),
           Expanded(
-            child: Container(
-              height: height * .08,
-              // width: width*.05,
-              // padding: EdgeInsets.symmetric(horizontal: 40),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.teal,
-                // borderRadius: BorderRadius.circular(height)
+            child: GestureDetector(
+              onTap: (){
+                print('sent');
+
+              },
+              child: Container(
+                height: height * .08,
+                // width: width*.05,
+                // padding: EdgeInsets.symmetric(horizontal: 40),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.teal,
+                  // borderRadius: BorderRadius.circular(height)
+                ),
+                child: Center(
+                    child: Icon(
+                  Icons.send,
+                  color: Colors.white,
+                )),
               ),
-              child: Center(
-                  child: Icon(
-                Icons.send,
-                color: Colors.white,
-              )),
             ),
           ),
         ],
