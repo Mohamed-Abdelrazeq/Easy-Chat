@@ -1,5 +1,6 @@
 import 'package:easychat_app/Controllers/UserProvider.dart';
 import 'package:easychat_app/Views/Screens/ChatScreen.dart';
+import 'package:easychat_app/Views/Screens/ChatSelectionScreen.dart';
 import 'package:easychat_app/Views/Screens/TestScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
+      ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
     ],
     child: App(),
   ),);
@@ -32,6 +33,7 @@ class App extends StatelessWidget {
         '/Register': (context) => RegisterScreen(),
         '/Login': (context) => LoginScreen(),
         '/Test': (context) => TestScreen(),
+        '/ChatSelectionScreen': (context) => ChatSelectionScreen(),
         '/ChatScreen': (context) => ChatScreen(),
       },
       home: FutureBuilder(

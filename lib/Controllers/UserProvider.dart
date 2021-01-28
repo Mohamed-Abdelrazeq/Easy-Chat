@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class UserProvider with ChangeNotifier{
-  String email = '';
+class ChatProvider with ChangeNotifier{
+  String senderEmail = '';
+  String receiverEmail = '';
 
-  void emailSetter(email){
-    this.email = email;
+  void senderEmailSetter(email){
+    this.senderEmail = email;
+    notifyListeners();
+  }
+  void receiverEmailSetter(email){
+    this.receiverEmail = email;
     notifyListeners();
   }
 }

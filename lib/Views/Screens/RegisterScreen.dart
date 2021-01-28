@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat_app/Views/Component/MyTextField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
@@ -7,8 +8,9 @@ import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
 
-  final TextEditingController email = TextEditingController();
-  final TextEditingController password = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   Future register(String email,String password) async {
     try {
@@ -32,6 +34,21 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
+    Future<void> addUser(String email, String password, String username) {
+
+      // var now = new DateTime.now();
+
+      CollectionReference users = FirebaseFirestore.instance.collection('Users');
+      return users.add({
+        'Email': email,
+        'Password': password,
+        'Username': username,
+      })
+      // .then((value) => print("sent"))
+          .catchError((error) => print("Failed: $error"));
+    }
+
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).requestFocus(FocusNode());
@@ -65,7 +82,18 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: height*.01,),
-              MyTextField(hint: "Email",controller: email,),
+              MyTextField(hint: "email",controller: emailController,),
+              SizedBox(height: height*.02,),
+              Text(
+                'Username',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: height*.025,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              SizedBox(height: height*.01,),
+              MyTextField(hint: "username",controller: usernameController,),
               SizedBox(height: height*.02,),
               Text(
                 'Password',
@@ -76,14 +104,14 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: height*.02,),
-              MyTextField(hint: 'Password',controller: password,),
+              MyTextField(hint: 'password',controller: passwordController,),
               SizedBox(height: height*.1,),
               GestureDetector(
                 onTap: () async {
                   //Close Keyboard
                   FocusScope.of(context).requestFocus(FocusNode());
                   //Check textfields
-                  if(email.text == ''){
+                  if(emailController.text == ''){
                     Flushbar(
                       title: "Warning",
                       message: "Enter your email",
@@ -92,7 +120,7 @@ class RegisterScreen extends StatelessWidget {
                       duration:  Duration(seconds: 2),
                     ).show(context);
                   }
-                  else if(password.text == ''){
+                  else if(passwordController.text == ''){
                     Flushbar(
                       title: "Warning",
                       message: "Enter your password",
@@ -103,11 +131,12 @@ class RegisterScreen extends StatelessWidget {
                   }
                   else {
                     //make request
-                    var myReturn = await register(email.text, password.text);
+                    var myReturn = await register(emailController.text, passwordController.text);
                     //test response
                     if (myReturn == true){
-                      email.clear();
-                      password.clear();
+                      addUser(emailController.text,passwordController.text,usernameController.text);
+                      emailController.clear();
+                      passwordController.clear();
                       Navigator.pop(context);
                     }
                     else{

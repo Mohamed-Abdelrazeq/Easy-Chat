@@ -68,7 +68,7 @@ class MessagingStream extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               padding: EdgeInsets.symmetric(horizontal: width * .03),
               decoration: BoxDecoration(
-                color: sender == '${Provider.of<UserProvider>(context).email}' ? Colors.teal : Colors.blue,
+                color: sender == '${Provider.of<ChatProvider>(context).senderEmail}' ? Colors.teal : Colors.blue,
                 borderRadius: BorderRadius.circular(25),
               ),
               child: ListTile(
@@ -76,13 +76,13 @@ class MessagingStream extends StatelessWidget {
                   document.data()['Message'],
                   style: TextStyle(color: Colors.white),
                   textAlign:
-                      sender == '${Provider.of<UserProvider>(context).email}' ? TextAlign.left : TextAlign.right,
+                      sender == '${Provider.of<ChatProvider>(context).senderEmail}' ? TextAlign.left : TextAlign.right,
                 ),
                 subtitle: Text(
                   document.data()['Sender'],
                   style: TextStyle(color: Colors.white70),
                   textAlign:
-                      sender == '${Provider.of<UserProvider>(context).email}' ? TextAlign.left : TextAlign.right,
+                      sender == '${Provider.of<ChatProvider>(context).senderEmail}' ? TextAlign.left : TextAlign.right,
                 ),
               ),
             );
@@ -170,7 +170,7 @@ class MessageSender extends StatelessWidget {
             () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
   }
   void sendMessageFunction(var context) async {
-    await sendMessage(myMessageController.text,'${Provider.of<UserProvider>(context,listen: false).email}', 'user2');
+    await sendMessage(myMessageController.text,'${Provider.of<ChatProvider>(context,listen: false).senderEmail}', 'user2');
     messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
     myMessageController.text = '';
   }
