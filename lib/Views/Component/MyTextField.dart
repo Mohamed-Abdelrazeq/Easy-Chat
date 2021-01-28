@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyTextField extends StatelessWidget {
 
@@ -10,6 +11,9 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp('[ ]')),
+      ],
       controller: controller,
       decoration:  InputDecoration(
         hintText: hint,

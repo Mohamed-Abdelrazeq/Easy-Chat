@@ -94,8 +94,12 @@ class MessagingStream extends StatelessWidget {
 
   final double width;
 
-  Widget build(BuildContext context) {
+  void goDownFunction(){
+    Timer(Duration(milliseconds: 300),
+            () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
+  }
 
+  Widget build(BuildContext context) {
     print('${Provider.of<ChatProvider>(context).senderEmail}-${Provider.of<ChatProvider>(context,listen: false).receiverEmail}');
 
     final CollectionReference messages = FirebaseFirestore.instance.collection('Chats')
@@ -112,6 +116,7 @@ class MessagingStream extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return spanner;
         }
+        goDownFunction();
         return ListView(
           controller: messagesController,
           physics: BouncingScrollPhysics(),
@@ -177,15 +182,18 @@ class MessageSender extends StatelessWidget {
     Timer(Duration(milliseconds: 300),
             () => messagesController.jumpTo(messagesController.position.maxScrollExtent+1));
   }
+
   void sendMessageFunction(var context) async {
-    await sendMessage(myMessageController.text,'${Provider.of<ChatProvider>(context,listen: false).senderEmail}', Provider.of<ChatProvider>(context,listen: false).receiverEmail,context);
-    messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
-    myMessageController.text = '';
+    if (myMessageController.text != ''){
+      await sendMessage(myMessageController.text,'${Provider.of<ChatProvider>(context,listen: false).senderEmail}', Provider.of<ChatProvider>(context,listen: false).receiverEmail,context);
+      messagesController.jumpTo(messagesController.position.maxScrollExtent+1);
+      myMessageController.text = '';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // goDownFunction();
+    goDownFunction();
     return Padding(
       padding: EdgeInsets.only(
           left: width * .05, right: width * .05, bottom: height * .02),
@@ -237,6 +245,7 @@ class MessageSender extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: ()async{
+
                 sendMessageFunction(context);
               },
               child: Container(

@@ -20,9 +20,9 @@ class ChatProvider with ChangeNotifier{
   }
 
   List<String> sort(){
-    List<String> talkers = [receiverEmail,senderEmail];
+    List<String> talkers = [receiverEmail.toLowerCase(),senderEmail.toLowerCase()];
     talkers.sort();
-    print(talkers);
+    // print(talkers);
     return talkers;
   }
 

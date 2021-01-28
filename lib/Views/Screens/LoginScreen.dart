@@ -2,6 +2,7 @@ import 'package:easychat_app/Controllers/ChatProvider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -157,6 +158,9 @@ class LoginScreen extends StatelessWidget {
                 height: height * .01,
               ),
               TextField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp('[ ]')),
+                ],
                 controller: emailController,
                 decoration: InputDecoration(
                   hintText: 'email',
@@ -179,6 +183,10 @@ class LoginScreen extends StatelessWidget {
                 height: height * .02,
               ),
               TextField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp('[ ]')),
+                ],
+                obscureText: true,
                 controller: passwordController,
                 onSubmitted: (_) {
                   submissionFunction(context);

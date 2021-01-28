@@ -3,6 +3,7 @@ import 'package:easychat_app/Views/Component/MyTextField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 
@@ -82,7 +83,18 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: height*.01,),
-              MyTextField(hint: "email",controller: emailController,),
+              TextField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp('[ ]')),
+                ],
+                controller: emailController,
+                decoration:  InputDecoration(
+                  hintText: "email",
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal, width: 1.0),
+                  ),
+                ),
+              ),
               SizedBox(height: height*.02,),
               Text(
                 'Username',
@@ -93,7 +105,18 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: height*.01,),
-              MyTextField(hint: "username",controller: usernameController,),
+              TextField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp('[ ]')),
+                ],
+                controller: usernameController,
+                decoration:  InputDecoration(
+                  hintText: "username",
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.teal, width: 1.0),
+                  ),
+                ),
+              ),
               SizedBox(height: height*.02,),
               Text(
                 'Password',
@@ -104,7 +127,19 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: height*.02,),
-              MyTextField(hint: 'password',controller: passwordController,),
+              TextField(
+            inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp('[ ]')),
+            ],
+            obscureText: true,
+            controller: passwordController,
+            decoration:  InputDecoration(
+              hintText: 'password',
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.teal, width: 1.0),
+              ),
+            ),
+          ),
               SizedBox(height: height*.1,),
               GestureDetector(
                 onTap: () async {
